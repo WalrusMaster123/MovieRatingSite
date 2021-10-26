@@ -23,7 +23,6 @@
 	echo '<p><a href="LogOut.php">LogOut</a></p>';
 		if($_SESSION['admin']==true){
 			echo '<p><a href="http://localhost/MovieRatingSite/www/AdminPage.php">Admin Page</a></p>';
-			
 		}
 	
 	}
