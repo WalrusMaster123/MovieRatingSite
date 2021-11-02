@@ -56,9 +56,10 @@
 	$query->bindValue(':id',$_GET['id']);
 	$query->execute();
 	$row = $query->fetch ();	
+	if(!(empty($row['COUNT(*)']))){
 	$Wal = $test / $row['COUNT(*)'];
 	echo '<br><br>','Overall Rating: ',$Wal,' out of 10','<br>';
-	
+	}
 	if(isset($_SESSION['user'])){
 	$query=$pdo->prepare('Select Value from Ratings WHERE Username = :us AND MovieID = :id');
 	$query->bindValue(':us',$_SESSION['user']);
