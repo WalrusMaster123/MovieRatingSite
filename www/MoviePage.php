@@ -99,9 +99,11 @@
 	$query->execute();
 	while ($row = $query->fetch ()){	
 		echo '<br>','From: ',$row['Username'],": ",$row['Text_Entered'];
+		if(isset($_SESSION['user'])){
 		if($_SESSION['user']!=$row['Username']){
 		?> <form action="MovieForm2.php?id=<?php echo $row['Username']?>" method="POST">
 		<input type="submit" value="Friend Request"></form><?php
+		}
 		}
 	}
 	
