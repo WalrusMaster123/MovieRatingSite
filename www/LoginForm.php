@@ -22,12 +22,31 @@ $query=$pdo->prepare('Select password from Users WHERE username = :Use');
 
 	if((empty($row=$query->fetch()))){
 		echo "<B>The Username entered is not in the database<B>";
-		Exit();
+		exit();
 	}
+	
+	$query=$pdo->prepare('Select TIMESTAMPDIFF(SECOND,FailLog,NOW()) as thing from Users WHERE username = :Use');
+	$query->bindValue(':Use',$_POST['username']);
+	$query->execute();
+	$row = $query->fetch ();
+	 
+	$want = $row['thing']; 
+		//TimestampDiff sql  units you want differance starting time(database) Endingtime NOW(); get back seconds.
 		
+	if($want != null && $want < 20){
+		echo 'This account has been temporarly delayed for login, login will available 20 seconds after the failed login.';
+		exit();
+	}
+	
+	
+	 
 	
 	If (!password_verify($Password,$Thing)){
-		echo '<b>Password does not match user password<b>';
+		echo '<b>Password does not match user password, try again in 20 seconds.<b>';
+		$query=$pdo->prepare('Update Users SET FailLog = NOW() WHERE username = :Use');
+		$query->bindValue(':Use',$_POST['username']);
+		$query->execute();
+		Exit();
 	};
 	
 	$query=$pdo->prepare('Select Admin_Status from Users WHERE username = :Use');
