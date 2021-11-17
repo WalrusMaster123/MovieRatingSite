@@ -55,8 +55,9 @@
 	$query=$pdo->prepare('Select COUNT(*) from Ratings WHERE MovieID = :id');
 	$query->bindValue(':id',$_GET['id']);
 	$query->execute();
-	$row = $query->fetch ();	
+	$row=$query->fetch();
 	if(!(empty($row['COUNT(*)']))){
+
 	$Wal = $test / $row['COUNT(*)'];
 	echo '<br><br>','Overall Rating: ',$Wal,' out of 10','<br>';
 	}
@@ -99,13 +100,24 @@
 	$query->bindValue(':id',$MovieID);
 	$query->execute();
 	while ($row = $query->fetch ()){	
-		echo '<br>','From: ',$row['Username'],": ",$row['Text_Entered'];
+		echo '<br>','From ',$row['Username'],": ",$row['Text_Entered'];
 		if(isset($_SESSION['user'])){
+		
 		if($_SESSION['user']!=$row['Username']){
+		?> <form action="LikeForm.php?id=<?php echo $row['CommentID']?>" method="POST">
+		<input type="submit" value="Like"></form>
+		<?php
 		?> <form action="MovieForm2.php?id=<?php echo $row['Username']?>" method="POST">
-		<input type="submit" value="Friend Request"></form><?php
+		<input type="submit" value="Friend Request"></form>
+		<?php
+		
 		}
-		}
+		}$quer=$pdo->prepare('Select COUNT(*) AS thing from Likes Where CommentID=:id ');
+		$quer->bindValue(':id',$row['CommentID']);
+		$quer->execute();
+		$rowe = $quer->fetch ();
+		echo "<br>","Number of Likes: ",$rowe['thing'];
+		
 	}
 	
 ?>
