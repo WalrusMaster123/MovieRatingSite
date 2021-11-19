@@ -109,6 +109,9 @@
 		<?php
 		?> <form action="MovieForm2.php?id=<?php echo $row['Username']?>" method="POST">
 		<input type="submit" value="Friend Request"></form>
+		
+		<form action="UserPage.php?id=<?php echo $row['Username']?>" method="POST">
+		<input type="submit" value="User Page"></form>
 		<?php
 		
 		}
