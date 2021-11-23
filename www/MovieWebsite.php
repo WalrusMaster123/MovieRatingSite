@@ -59,9 +59,10 @@ text-align: center";>
 		
 		echo  '<p><a href = "http://localhost/MovieRatingSite/www/MoviePage.php?id='.$movie.'">'.$title.'</a></p>';
 		}
+
+		echo  '<p><a href = "http://localhost/MovieRatingSite/www/RecommendPage.php?id='.$_SESSION["user"].'">Recommend</a></p>';
 		
-		
-		$query=$pdo->prepare('Select * from comments WHERE Username IN (Select Username2 from Friends  WHERE Username1 = :you) ORDER BY Time_Made DESC LIMIT 10');
+		$query=$pdo->prepare('Select * from comments,friends WHERE comments.Username!= :you AND (Friends.Username1 = :you OR Friends.Username2 = :you)AND(comments.Username=friends.Username1 OR comments.Username=friends.Username2)  ORDER BY Time_Made DESC LIMIT 10');
 		$query->bindValue(':you',$_SESSION['user']);
 		$query->execute();
 		?>
