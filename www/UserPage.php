@@ -38,7 +38,6 @@
 		
 	if($_GET['id']==$_SESSION['user']){
 		?>
-		<p><b>Add picture</b></p>
 		<form action="UserImageForm.php?id=<?php echo $_GET['id'] ?>" enctype= 'multipart/form-data' method="POST">
 		Upload Profile Picture:<input type = "file" name="pfp" accept="image/png, image/jpeg">
 		<input type="submit" value="Submit"></form>

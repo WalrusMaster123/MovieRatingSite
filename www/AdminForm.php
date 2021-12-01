@@ -1,4 +1,3 @@
-
 <?php 
 	session_start();
 	include 'database.php';
@@ -6,6 +5,41 @@
 		header('Location: http://localhost/MovieRatingSite/www/MovieWebsite.php');
 	exit;
 	}
+	
+	if($_GET['id']==0){
+		$query=$pdo->prepare('Select * from studio');
+		$query->execute();
+		while($row=$query->fetch()){
+			if($_POST['Stud']==$row['Name']){
+				echo 'This studio is already in the database';
+				exit;
+			}
+		}
+	$query=$pdo->prepare('Insert into studio(Name)Values(:eik)');
+	$query->bindValue(':eik',$_POST['Stud']);
+	$query->execute();
+	
+	header('Location: http://localhost/MovieRatingSite/www/AdminPage.php');
+	exit;
+	}
+	
+	if($_GET['id']==1){
+		$query=$pdo->prepare('Select * from people');
+		$query->execute();
+		while($row=$query->fetch()){
+			if($_POST['Peopl']==$row['Name']){
+				echo 'This Person is already in the database';
+				exit;
+			}
+		}
+	$query=$pdo->prepare('Insert into people(Name)Values(:eik)');
+	$query->bindValue(':eik',$_POST['Peopl']);
+	$query->execute();
+	
+	header('Location: http://localhost/MovieRatingSite/www/AdminPage.php');
+	exit;
+	}
+	
 	
 	$query=$pdo->prepare('Select Title, Release_Year from Movies WHERE Title = :title AND Release_Year = :ry ');
 	$query->bindValue(':title',$_POST['title']);
@@ -38,6 +72,10 @@
 	
 	$finfo = new finfo (FILEINFO_MIME_TYPE);
 	$ftype = $finfo->file ($_FILES['poster']['tmp_name']);
+	if (filesize($_FILES['poster']['tmp_name'])>100000){
+		echo 'File size is too big, please either pick a different image or reduce its size';
+		exit();
+	}
 	if($ftype != 'image/jpeg'){
 		echo 'Not correct file type!';
 		exit();
@@ -55,6 +93,13 @@
 	exit;
 
 
+
+
+
+
+
+
+?>
 
 
 

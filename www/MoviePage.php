@@ -11,18 +11,56 @@
 	include 'database.php';
 	
 	//$id=$_GET['movie'];
+	$Thin = $_GET['id'];
+	
 	$query=$pdo->prepare('Select * from Movies WHERE MovieID = :id');
 	$query->bindValue(':id',$_GET['id']);
 	$query->execute();
+	
+	$quer=$pdo->prepare('Select * from hasgenre WHERE MovieID = :id');
+	$quer->bindValue(':id',$_GET['id']);
+	$quer->execute();
+	
+	$que=$pdo->prepare('Select * from People WHERE PersonID IN(Select PersonID from workedin WHERE MovieID = :id)');
+	$que->bindValue(':id',$_GET['id']);
+	$que->execute();
+	
+	$qu=$pdo->prepare('Select * from produced WHERE MovieID = :id');
+	$qu->bindValue(':id',$_GET['id']);
+	$qu->execute();
+	//$rowa = $quer->fetch ();
 	while ($row = $query->fetch ())
-	{
+	{	
+	if(isset($_SESSION['user'])){
+	if($_SESSION['admin']==true && isset($_SESSION['admin'])){
+		echo  '<p><a href = http://localhost/MovieRatingSite/www/AdminPage.php?id='.$Thin.'>'."UPDATE THIS MOVIE".'</a></p>','<br>';
+	}}
+	
 	echo 'Title: ',$row['Title'], '<br>'; 
 	echo 'Movie Description: ',$row['Description'],'<br>';
 	echo 'Length: ',$row['Length'],'<br>';
 	echo 'Year of Release: ',$row['Release_Year'],'<br>';
+	echo 'Genre: ';
+	while($rowa = $quer->fetch ()){
+	if(!empty($rowa['GenreName'])){
+		echo $rowa['GenreName'],', ';//;
+	}}echo '<br>';
 	
+	echo 'People involved with this movie: ';
+	while($rowb = $que->fetch ()){
+	if(!empty($rowb['PersonID'])){
+		echo $rowb['Name'],', ';
+	}}
+	echo '<br>';
+	echo 'Studio: ';
+	while($rowc = $qu->fetch ()){
+	if(!empty($rowc['Name'])){
+		echo $rowc['Name'],', ';
+	}
+	}echo '<br>';
 	$PosterID = $row['Poster'];
 	$MovieID = $row['MovieID'];
+	
 	
 	//$Thing = $row['Poster'];
 	//echo "<img src= 'files/80.jpg'>";
@@ -68,7 +106,7 @@
 	$query->execute();
 	}
 	
-	if(isset($_SESSION['user']) && (empty($row=$query->fetch())) ){
+	if(isset($_SESSION['user'])  ){
 		?>
 	<p><b>RateMovie:</b></p>
 	<form action="MovieForm.php?id=<?php echo $_GET['id']?>" method="POST">
@@ -78,10 +116,14 @@
 
 	<?php
 	}
-	elseif(isset($_SESSION['user'])){
-		//$row=$query->fetch();
+	if(isset($_SESSION['user'])){
+		$query=$pdo->prepare('Select Value from Ratings WHERE Username = :us AND MovieID = :id');
+		$query->bindValue(':us',$_SESSION['user']);
+		$query->bindValue(':id',$_GET['id']);
+		$query->execute();
+		while($row = $query->fetch ()){
 		echo '<br>','You rated this movie: ',$row['Value'],' out of 10';
-	}
+	}}
 	if(isset($_SESSION['user'])){
 		?>
 	<p><b>Leave a Comment:</b></p>
@@ -114,13 +156,16 @@
 		<input type="submit" value="User Page"></form>
 		<?php
 		
+		//echo '<br>';
 		}
-		}$quer=$pdo->prepare('Select COUNT(*) AS thing from Likes Where CommentID=:id ');
+		}
+		$quer=$pdo->prepare('Select COUNT(*) AS thing from Likes Where CommentID=:id ');
 		$quer->bindValue(':id',$row['CommentID']);
 		$quer->execute();
 		$rowe = $quer->fetch ();
 		echo "<br>","Number of Likes: ",$rowe['thing'];
 		
+		echo '<br>','--------------------------------------------------------';
 	}
 	
 ?>

@@ -40,17 +40,19 @@ text-align: center";>
 	//Anytime you list a username, list a link to the user's profile. Maybe make a function where it auto does the link.
 	
 	if(isset($_SESSION['user'])){
-	echo 'Hello '; echo $_SESSION['user'];
+	//echo 'Hello '; echo $_SESSION['user'];
 	//echo '<br>Admin Status: '; echo $_SESSION['admin'];
 	echo '<p><a href="LogOut.php">LogOut</a></p>';
+	echo '-------------------------------------------------------------------------','<br>';
 		if($_SESSION['admin']==true){
 			echo '<p><a href="http://localhost/MovieRatingSite/www/AdminPage.php">Admin Page</a></p>';
+			echo '-------------------------------------------------------------------------','<br>';
 		}	
 		$query=$pdo->prepare('Select Title,MovieID from Movies ORDER BY Date_Added DESC LIMIT 10');
 		//$query->bindValue(':Use',$_POST['username']);
 		$query->execute();	
 		
-			
+		echo 'Movie List: ';	
 		while ($row = $query->fetch ())
 		{	
 		$movie=$row['MovieID'];
@@ -59,8 +61,11 @@ text-align: center";>
 		
 		echo  '<p><a href = "http://localhost/MovieRatingSite/www/MoviePage.php?id='.$movie.'">'.$title.'</a></p>';
 		}
-
-		echo  '<p><a href = "http://localhost/MovieRatingSite/www/RecommendPage.php?id='.$_SESSION["user"].'">Recommend</a></p>';
+		echo '-------------------------------------------------------------------------','<br>';
+		echo  '<p><a href = "http://localhost/MovieRatingSite/www/RecommendPage.php?id='.$_SESSION["user"].'">Recommend Page</a></p>';
+		echo '-------------------------------------------------------------------------','<br>';
+		echo  '<p><a href = "http://localhost/MovieRatingSite/www/UserPage.php?id='.$_SESSION["user"].'">Your User Page</a></p>';
+		echo '-------------------------------------------------------------------------','<br>';
 		
 		$query=$pdo->prepare('Select * from comments,friends WHERE comments.Username!= :you AND (Friends.Username1 = :you OR Friends.Username2 = :you)AND(comments.Username=friends.Username1 OR comments.Username=friends.Username2)  ORDER BY Time_Made DESC LIMIT 10');
 		$query->bindValue(':you',$_SESSION['user']);
