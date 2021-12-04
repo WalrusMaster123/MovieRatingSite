@@ -13,7 +13,7 @@ if(!isset($_SESSION['user'])){
 	
 if($_POST['id']==0){
 
-	$query=$pdo->prepare('Select * from Friends WHERE Username2 = :them ');
+	$query=$pdo->prepare('Select * from Friends WHERE (Username1 = :us OR Username2 = :us) AND (Username1 = :them OR Username2 = :them');
 	//$query->bindValue(':us',$_SESSION['user']);
 	$query->bindValue(':them',$_POST['name']);
 	$query->execute();
